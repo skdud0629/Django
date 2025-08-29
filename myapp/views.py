@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import action
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -23,7 +24,6 @@ class BookViewSet(viewsets.ModelViewSet):
 
 
 #추가
-
 class SignupView(APIView):
     def post(self, request):
         s = SignupSerializer(data=request.data)
@@ -45,7 +45,7 @@ class LoginView(APIView):
         access = RefreshToken.for_user(user).access_token
         return Response({"access": str(access)})
 
-class RegionStandardViewSet(viewsets.ReadOnlyModelViewSet):
+class RegionStandardViewSet(viewsets.ReadOnlyModelViewSet):#유저용 분당단가 api
     queryset = RegionStandard.objects.all().order_by("region_code")
     serializer_class = RegionStandardSerializer
 
@@ -66,3 +66,8 @@ class CalculationRecordViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return CalculationRecord.objects.filter(user=self.request.user).order_by("-created_at")
+
+class AdminRegionStandardViewSet(viewsets.ModelViewSet):#어드민 전용 분당단가 api
+    queryset = RegionStandard.objects.all().order_by("region_code")
+    serializer_class = RegionStandardSerializer
+    permission_classes = [IsAdminUser]  # 관리자만 접근 가능
