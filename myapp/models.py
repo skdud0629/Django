@@ -4,6 +4,17 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from decimal import Decimal, ROUND_DOWN
 
+from simple_history.models import HistoricalRecords
+
+
+class Meta:#중복 저장 예외
+    constraints = [
+        models.UniqueConstraint(
+            fields=["region_code", "course_type", "subject_category", "effective_date"],
+            name="unique_region_course_subject_date"
+        )
+    ]
+
 # Create your models here. 테스트 
 class Book(models.Model):
     title = models.CharField(max_length=100)
@@ -28,14 +39,30 @@ class RegionStandard(models.Model):
 class RegionStandard(models.Model):
     region_code = models.CharField(max_length=100)         # 예: "서울_성북"
     education_office = models.CharField(max_length=100)    # 예: "서울 성북교육지원청"
-    course_type = models.CharField(max_length=50)          # 예: "개인" / "그룹"
     subject_category = models.CharField(max_length=50)     # 예: "음악" / "미술"
-    standard_price = models.DecimalField(max_digits=10, decimal_places=2)  # 분당 기준 단가
-    effective_date = models.DateField()
+    
+    # 기준 단가 (양의 정수, 분당 단가)
+    standard_price = models.PositiveIntegerField()  
+    
+    # 교습비 (총 비용)
+    tuition_fee = models.PositiveIntegerField(help_text="총 교습비(원)")
+    
+    # 수업 횟수 & 시간
+    lessons_per_week = models.PositiveIntegerField(help_text="주당 수업 횟수")
+    lessons_per_month = models.DecimalField(max_digits=4, decimal_places=1, help_text="월간 수업 횟수 (소수점 1자리 허용)")
+    minutes_per_class = models.PositiveIntegerField(help_text="1회 수업 시간(분)")
+    
+    # 적용일 (자동 변경)
+    effective_date = models.DateField(auto_now=True)
+    
+    # 출처 URL
     source_url = models.URLField(null=True, blank=True)
 
+    # 변경 이력 추적
+    history = HistoricalRecords()
+
     def __str__(self):
-        return f"{self.region_code} / {self.course_type} / {self.subject_category}"
+        return f"{self.region_code} / {self.subject_category} / {self.standard_price}원"
 
 class CalculationRecord(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="calculations")
