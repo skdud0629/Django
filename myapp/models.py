@@ -45,12 +45,12 @@ class RegionStandard(models.Model):
     standard_price = models.PositiveIntegerField()  
     
     # 교습비 (총 비용)
-    tuition_fee = models.PositiveIntegerField(help_text="총 교습비(원)")
+    #tuition_fee = models.PositiveIntegerField(help_text="총 교습비(원)")
     
     # 수업 횟수 & 시간
-    lessons_per_week = models.PositiveIntegerField(help_text="주당 수업 횟수")
-    lessons_per_month = models.DecimalField(max_digits=4, decimal_places=1, help_text="월간 수업 횟수 (소수점 1자리 허용)")
-    minutes_per_class = models.PositiveIntegerField(help_text="1회 수업 시간(분)")
+   # lessons_per_week = models.PositiveIntegerField(help_text="주당 수업 횟수")
+   # lessons_per_month = models.DecimalField(max_digits=4, decimal_places=1, help_text="월간 수업 횟수 (소수점 1자리 허용)")
+   # minutes_per_class = models.PositiveIntegerField(help_text="1회 수업 시간(분)")
     
     # 적용일 (자동 변경)
     effective_date = models.DateField(auto_now=True)

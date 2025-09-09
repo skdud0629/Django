@@ -17,10 +17,6 @@ class RegionStandardAdmin(SimpleHistoryAdmin):
         "education_office",
         "subject_category",
         "standard_price",
-        "tuition_fee",
-        "lessons_per_week",
-        "lessons_per_month",
-        "minutes_per_class",
         "effective_date",
     )
     list_filter = ("education_office", "subject_category")
