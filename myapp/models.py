@@ -62,7 +62,7 @@ class RegionStandard(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return f"{self.region_code} / {self.subject_category} / {self.standard_price}원"
+        return f"{self.region_code}"
 
 class CalculationRecord(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="calculations")
