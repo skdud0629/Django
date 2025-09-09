@@ -1,11 +1,14 @@
 from rest_framework import serializers
 from .models import Book
-
+from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from decimal import Decimal
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .models import RegionStandard, CalculationRecord
-
+from rest_framework.views import APIView
+from .models import RegionStandard
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,7 +39,15 @@ class SignupSerializer(serializers.ModelSerializer):
 class RegionStandardSerializer(serializers.ModelSerializer):
     class Meta:
         model = RegionStandard
-        fields = "__all__"
+        fields = [
+            "id",
+            "region_code",
+            "education_office",
+            "subject_category",
+            "standard_price",
+            "effective_date",
+            "source_url",
+        ]
 
 class CalculationRecordSerializer(serializers.ModelSerializer):
     class Meta:
