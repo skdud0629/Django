@@ -59,3 +59,16 @@ class CalculationRecordSerializer(serializers.ModelSerializer):
         instance.recompute()
         instance.save()
         return instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "username", "email", "date_joined")
+
+class UserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)

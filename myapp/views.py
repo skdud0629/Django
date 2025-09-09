@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from .models import Book
 from .serializers import BookSerializer
 
+from rest_framework import generics
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -10,6 +11,10 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import action
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.contrib.auth.models import User
 
 from .models import RegionStandard, CalculationRecord
 from .serializers import (
@@ -71,3 +76,21 @@ class AdminRegionStandardViewSet(viewsets.ModelViewSet):#어드민 전용 분당
     queryset = RegionStandard.objects.all().order_by("region_code")
     serializer_class = RegionStandardSerializer
     permission_classes = [IsAdminUser]  # 관리자만 접근 가능
+
+
+
+class UserInfoView(APIView):
+    def get(self, request):
+        user = request.user
+        if user.is_authenticated:
+            return Response({
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+            })
+        return Response({"detail": "Not authenticated"}, status=401)
+
+
+class RegionStandardListView(generics.ListAPIView):
+    queryset = RegionStandard.objects.all()
+    serializer_class = RegionStandardSerializer
