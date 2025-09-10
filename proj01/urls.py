@@ -1,6 +1,7 @@
 # proj01/proj01/urls.py
 from django.contrib import admin
 from django.urls import path, include
+from myapp.views import UserInfoView
 from rest_framework.routers import DefaultRouter
 from myapp.views import (
     RegionStandardViewSet,
@@ -24,5 +25,6 @@ urlpatterns = [
     path("api/auth/login/", LoginView.as_view()),
     path("api/", include(router.urls)),
     path("api/admin/", include(admin_router.urls)),
+    path("api/auth/me/", UserInfoView.as_view()),
 ]
 
