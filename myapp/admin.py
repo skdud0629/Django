@@ -32,6 +32,7 @@ class CalculationRecordInline(admin.TabularInline):
         "subject",
         "minutes_per_class",
         "months",
+        "lessons_per_week",
         "lessons_per_month",
         "tuition_fee",
         "unit_price",

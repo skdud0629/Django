@@ -72,6 +72,7 @@ class CalculationRecord(models.Model):
     minutes_per_class = models.PositiveIntegerField()
     months = models.PositiveIntegerField()
     lessons_per_month = models.PositiveIntegerField()
+    lessons_per_week = models.PositiveIntegerField(null=True)
     tuition_fee = models.PositiveIntegerField(help_text="총 교습비(원)")
 
     # 파생값
