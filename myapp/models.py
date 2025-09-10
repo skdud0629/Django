@@ -48,7 +48,7 @@ class RegionStandard(models.Model):
     #tuition_fee = models.PositiveIntegerField(help_text="총 교습비(원)")
     
     # 수업 횟수 & 시간
-   # lessons_per_week = models.PositiveIntegerField(help_text="주당 수업 횟수")
+    #lessons_per_week = models.PositiveIntegerField(help_text="주당 수업 횟수")
    # lessons_per_month = models.DecimalField(max_digits=4, decimal_places=1, help_text="월간 수업 횟수 (소수점 1자리 허용)")
    # minutes_per_class = models.PositiveIntegerField(help_text="1회 수업 시간(분)")
     
@@ -66,13 +66,14 @@ class RegionStandard(models.Model):
 
 class CalculationRecord(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="calculations")
-    region_standard = models.ForeignKey(RegionStandard, on_delete=models.PROTECT, related_name="calculations")
+    region_standard =models.CharField(max_length=100)
 
     subject = models.CharField(max_length=100)  # 예: "피아노"
     minutes_per_class = models.PositiveIntegerField()
+    minutes_per_class = models.PositiveIntegerField()
     months = models.PositiveIntegerField()
-    lessons_per_month = models.PositiveIntegerField()
     lessons_per_week = models.PositiveIntegerField(null=True)
+    lessons_per_month = models.FloatField()
     tuition_fee = models.PositiveIntegerField(help_text="총 교습비(원)")
 
     # 파생값
@@ -95,9 +96,19 @@ class CalculationRecord(models.Model):
         self.total_minutes = total
         unit = Decimal(self.tuition_fee) / Decimal(total)
         self.unit_price = self._floor_2(unit)
-        self.standard_price_at_calc = Decimal(self.region_standard.standard_price)
-        self.is_valid = self.unit_price <= self.standard_price_at_calc
 
+        try:
+            region_instance = RegionStandard.objects.get(region_code=self.region_standard)
+        
+            # 찾은 객체에서 standard_price 값을 가져와 계산합니다.
+            self.standard_price_at_calc = Decimal(region_instance.standard_price)
+            self.is_valid = self.unit_price <= self.standard_price_at_calc
+        
+        except RegionStandard.DoesNotExist:
+            self.standard_price_at_calc = Decimal("0.00")
+            self.is_valid = False
+
+            
     def save(self, *args, **kwargs):
         # 파생 필드 자동 계산
         self.recompute()
