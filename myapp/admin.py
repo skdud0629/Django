@@ -28,7 +28,7 @@ class CalculationRecordInline(admin.TabularInline):
     model = CalculationRecord
     extra = 0
     fields = (
-        "region_standard",
+        "education_office",
         "subject",
         "minutes_per_class",
         "months",

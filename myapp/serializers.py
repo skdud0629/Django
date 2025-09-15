@@ -54,7 +54,7 @@ class CalculationRecordSerializer(serializers.ModelSerializer):
         model = CalculationRecord
         read_only_fields = ("user", "total_minutes", "unit_price", "standard_price_at_calc", "is_valid", "created_at", "updated_at")
         fields = (
-            "id", "user", "region_standard", "subject",
+            "id", "user", "education_office", "subject",
             "minutes_per_class", "months","lessons_per_week", "lessons_per_month", "tuition_fee",
             "total_minutes", "unit_price", "standard_price_at_calc", "is_valid",
             "created_at", "updated_at"

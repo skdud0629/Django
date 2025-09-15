@@ -66,7 +66,7 @@ class RegionStandard(models.Model):
 
 class CalculationRecord(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="calculations")
-    region_standard =models.CharField(max_length=100)
+    education_office =models.CharField(max_length=100)
 
     subject = models.CharField(max_length=100)  # 예: "피아노"
     minutes_per_class = models.PositiveIntegerField()
@@ -98,7 +98,7 @@ class CalculationRecord(models.Model):
         self.unit_price = self._floor_2(unit)
 
         try:
-            region_instance = RegionStandard.objects.get(region_code=self.region_standard)
+            region_instance = RegionStandard.objects.get(region_code=self.education_office)
         
             # 찾은 객체에서 standard_price 값을 가져와 계산합니다.
             self.standard_price_at_calc = Decimal(region_instance.standard_price)
