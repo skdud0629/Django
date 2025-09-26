@@ -28,7 +28,7 @@ class RegionStandard(models.Model):
     course_type = models.CharField(max_length=50)  # 예: "개인", "그룹"
     subject_category = models.CharField(max_length=50)  # 예: "미술", "음악"
     standard_price = models.FloatField()  # 기준 분당 단가
-    effective_date = models.DateField()  # 기준 단가 적용일
+    effective_date = models.DateField($)  # 기준 단가 적용일
 
     def __str__(self):
         return f"{self.region_code} - {self.course_type} - {self.subject_category}"
@@ -68,10 +68,10 @@ class CalculationRecord(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="calculations")
     education_office =models.CharField(max_length=100)
 
-    subject = models.CharField(max_length=100)  # 예: "피아노"
+    course_division=models.CharField(max_length=100, default="교습과정구분 정보를 입력해주세요.")
+    subject = models.CharField(max_length=100, )  # 예: "피아노"
     minutes_per_class = models.PositiveIntegerField()
     minutes_per_class = models.PositiveIntegerField()
-    months = models.PositiveIntegerField()
     lessons_per_week = models.PositiveIntegerField(null=True)
     lessons_per_month = models.FloatField()
     tuition_fee = models.PositiveIntegerField(help_text="총 교습비(원)")
@@ -90,7 +90,7 @@ class CalculationRecord(models.Model):
         return value.quantize(Decimal("0.01"), rounding=ROUND_DOWN)
 
     def recompute(self):
-        total = self.minutes_per_class * self.lessons_per_month * self.months
+        total = self.minutes_per_class * self.lessons_per_month
         if total <= 0:
             raise ValueError("총 수업 시간은 1분 이상이어야 합니다.")
         self.total_minutes = total
