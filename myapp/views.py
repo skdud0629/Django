@@ -21,6 +21,15 @@ from .serializers import (
     RegionStandardSerializer, CalculationRecordSerializer, SignupSerializer
 )
 
+#특정 아이템 삭제
+class CalculationRecordDestroyView(generics.DestroyAPIView):
+    queryset = CalculationRecord.objects.all()
+    serializer_class = CalculationRecordSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # 현재 로그인된 사용자의 기록만 삭제할 수 있도록 필터링
+        return self.queryset.filter(user=self.request.user)
 
 
 class BookViewSet(viewsets.ModelViewSet):
