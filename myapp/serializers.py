@@ -52,11 +52,12 @@ class RegionStandardSerializer(serializers.ModelSerializer):
 class CalculationRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = CalculationRecord
-        read_only_fields = ("user", "total_minutes", "unit_price", "standard_price_at_calc", "is_valid", "created_at", "updated_at")
+        read_only_fields = ("user", "created_at", "updated_at")
         fields = (
             "id", "user", "education_office", "subject",
-            "minutes_per_class","lessons_per_week", "lessons_per_month", "tuition_fee",
-            "total_minutes", "unit_price", "standard_price_at_calc", "is_valid",
+            "minutes_per_class", "lessons_per_week", "lessons_per_month",
+            "tuition_fee", "course_type",
+            "unit_price", "standard_price_at_calc", "is_valid",
             "created_at", "updated_at"
         )
 
@@ -67,10 +68,8 @@ class CalculationRecordSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         for k, v in validated_data.items():
             setattr(instance, k, v)
-        instance.recompute()
         instance.save()
         return instance
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

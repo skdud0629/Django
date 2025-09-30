@@ -78,25 +78,27 @@ class CalculationRecord(models.Model):
     @staticmethod
     def _floor_2(value: Decimal) -> Decimal:
         return value.quantize(Decimal("0.01"), rounding=ROUND_DOWN)
-
     def recompute(self):
+        # total_minutes만 서버에서 계산
         total = self.minutes_per_class * self.lessons_per_month
         if total <= 0:
             raise ValueError("총 수업 시간은 1분 이상이어야 합니다.")
         self.total_minutes = total
-        unit = Decimal(self.tuition_fee) / Decimal(total)
-        self.unit_price = self._floor_2(unit)
 
-        try:
-            region_instance = RegionStandard.objects.get(region_code=self.education_office)
-        
-            # 찾은 객체에서 standard_price 값을 가져와 계산합니다.
-            self.standard_price_at_calc = Decimal(region_instance.standard_price)
-            self.is_valid = self.unit_price <= self.standard_price_at_calc
-        
-        except RegionStandard.DoesNotExist:
-            self.standard_price_at_calc = Decimal("0.00")
-            self.is_valid = False
+        # unit_price, standard_price_at_calc는 클라에서 온 값이 있으면 덮어쓰지 않음
+        if not self.unit_price:  # DB에 값이 없을 때만 계산
+            unit = Decimal(self.tuition_fee) / Decimal(total)
+            self.unit_price = self._floor_2(unit)
+
+        if not self.standard_price_at_calc:  # 클라가 준 값이 없을 때만 RegionStandard 참고
+            try:
+                region_instance = RegionStandard.objects.get(region_code=self.education_office)
+                self.standard_price_at_calc = Decimal(region_instance.standard_price)
+                self.is_valid = self.unit_price <= self.standard_price_at_calc
+            except RegionStandard.DoesNotExist:
+                self.standard_price_at_calc = Decimal("0.00")
+                self.is_valid = False
+
 
             
     def save(self, *args, **kwargs):
