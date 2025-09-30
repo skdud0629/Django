@@ -15,12 +15,12 @@ class RegionStandardAdmin(SimpleHistoryAdmin):
     list_display = (
         "region_code",
         "education_office",
-        "subject_category",
+        "course_type",
         "standard_price",
         "effective_date",
     )
-    list_filter = ("education_office", "subject_category")
-    search_fields = ("region_code", "education_office", "subject_category")
+    list_filter = ("education_office", "course_type")
+    search_fields = ("region_code", "education_office", "cursor_type")
 
 
 # Inline 정의
@@ -31,7 +31,6 @@ class CalculationRecordInline(admin.TabularInline):
         "education_office",
         "subject",
         "minutes_per_class",
-        "months",
         "lessons_per_week",
         "lessons_per_month",
         "tuition_fee",

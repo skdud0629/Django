@@ -43,7 +43,7 @@ class RegionStandardSerializer(serializers.ModelSerializer):
             "id",
             "region_code",
             "education_office",
-            "subject_category",
+            "course_type",
             "standard_price",
             "effective_date",
             "source_url",

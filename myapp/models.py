@@ -39,19 +39,10 @@ class RegionStandard(models.Model):
 class RegionStandard(models.Model):
     region_code = models.CharField(max_length=100)         # 예: "서울_성북"
     education_office = models.CharField(max_length=100)    # 예: "서울 성북교육지원청"
-    subject_category = models.CharField(max_length=50)     # 예: "음악" / "미술"
-    
+    course_type = models.CharField(max_length=50)     # 예: 보습-초등    
     # 기준 단가 (양의 정수, 분당 단가)
     standard_price = models.PositiveIntegerField()  
-    
-    # 교습비 (총 비용)
-    #tuition_fee = models.PositiveIntegerField(help_text="총 교습비(원)")
-    
-    # 수업 횟수 & 시간
-    #lessons_per_week = models.PositiveIntegerField(help_text="주당 수업 횟수")
-   # lessons_per_month = models.DecimalField(max_digits=4, decimal_places=1, help_text="월간 수업 횟수 (소수점 1자리 허용)")
-   # minutes_per_class = models.PositiveIntegerField(help_text="1회 수업 시간(분)")
-    
+
     # 적용일 (자동 변경)
     effective_date = models.DateField(auto_now=True)
     
@@ -68,9 +59,8 @@ class CalculationRecord(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="calculations")
     education_office =models.CharField(max_length=100)
 
-    course_division=models.CharField(max_length=100, default="교습과정구분 정보를 입력해주세요.")
+    course_type=models.CharField(max_length=100, default="교습과정구분 정보를 입력해주세요.")
     subject = models.CharField(max_length=100, )  # 예: "피아노"
-    minutes_per_class = models.PositiveIntegerField()
     minutes_per_class = models.PositiveIntegerField()
     lessons_per_week = models.PositiveIntegerField(null=True)
     lessons_per_month = models.FloatField()
